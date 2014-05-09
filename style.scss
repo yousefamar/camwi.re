@@ -1,0 +1,25 @@
+$bgDark: #030C22;
+$bgLight: #20293F;
+$mg1: #3E3E53;
+$mg2: #404749;
+$fgDark: #A9B0B3;
+$fgLight: #E5E7E8;
+
+* {
+	margin: 0;
+	padding: 0;
+	//vertical-align: middle;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	&:focus {
+		outline: none;
+	}
+}
+html, body {
+	width: 100%;
+	height: 100%;
+}
+body {
+	background-color: $bgDark;
+}
