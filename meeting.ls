@@ -118,8 +118,6 @@ do ->
       self = @
       window.addEventListener \beforeunload, !-> self.part!
 
-    onmeeting: ->
-
     onuserleft: ->
 
     _captureUserMedia: (callback) !->
@@ -152,19 +150,15 @@ do ->
 
       navigator.getUserMedia constraints, onstream, onerror
 
-    host: (roomid) !->
+    join: (roomid) !->
       @roomid = roomid
       self = @
-      @_captureUserMedia !-> self.sig.host roomid
-
-    join: (userid, roomid) !->
-      @roomid = roomid
-      self = @
-      @_captureUserMedia !-> self.sig.join userid, roomid
+      <-! @_captureUserMedia
+      exists <-! self.sig.join roomid, _
+      self.sig.is-host = not exists
 
     part: !->
-      @sig.signal {leaving: true}
-      if @sig.is-host then @sig.stopBroadcasting = true
+      @sig.signal \part
       @stream?.stop!
 
 
@@ -175,7 +169,7 @@ do ->
     @is-host = false
 
     # self instance
-    signaler = @
+    self = @
 
     # object to store all connected peers
     peers = {}
@@ -186,33 +180,51 @@ do ->
     @connect = !->
       socket = io.connect it
 
-      @signal = !->
-        it.userid = @userid
-        console.log '> ', it
-        socket.send JSON.stringify it
+      @signal = (event, data) !->
+        data = data || {}
+        data.userid = @userid
+        console.log '> ', event, data
+        socket.emit event, data
 
-      sig = @
-      socket.on \message, !->
-        it = JSON.parse it
-        console.log '< ', it
-        sig.on-signal it
+      socket
+        ..on \join, (userid) !->
+          console.log '< ', \join, userid
+          # it is appeared that 10 or more users can send 
+          # participation requests concurrently
+          # onicecandidate fails in such case
+          if not self.creatingOffer
+            self.creatingOffer = true
+            createOffer userid
+            setTimeout !->
+              self.creatingOffer = false
+              if self.participants and self.participants.length
+                repeatedlyCreateOffer!
+            , 1000
+          else
+            if not self.participants
+              self.participants = []
+            self.participants[self.participants.length] = userid
+        
+        ..on \part, (data) !->
+          console.log '< ', \part, data
+          root.onuserleft data.userid
+          return
 
-    participationRequest = (_userid) !->
-      # it is appeared that 10 or more users can send 
-      # participation requests concurrently
-      # onicecandidate fails in such case
-      if not signaler.creatingOffer
-        signaler.creatingOffer = true
-        createOffer _userid
-        setTimeout !->
-          signaler.creatingOffer = false
-          if signaler.participants and signaler.participants.length
-            repeatedlyCreateOffer!
-        , 1000
-      else
-        if not signaler.participants
-          signaler.participants = []
-        signaler.participants[signaler.participants.length] = _userid
+        ..on \sdp, (data) !->
+          console.log '< ', \sdp, data
+          if data.to ~= userid
+            self.onsdp data
+
+        ..on \ice, (data) !->
+          console.log '< ', \ice, data
+          if data.to ~= userid
+            self.onice data
+
+        ..on \new, (data) !->
+          console.log '< ', \new, data
+          if data.conferencing and data.newcomer !~= userid and !!participants[data.newcomer] ~= false
+            participants[data.newcomer] = data.newcomer
+            root.stream && self.signal \joinUsr, {to: data.newcomer}, ->
 
     # reusable function to create new offer
     createOffer = (unto) !->
@@ -223,20 +235,20 @@ do ->
 
     # reusable function to create new offer repeatedly
     repeatedlyCreateOffer = !->
-      firstParticipant = signaler.participants[0]
+      firstParticipant = self.participants[0]
       
       if !firstParticipant then return
 
-      signaler.creatingOffer = true
+      self.creatingOffer = true
       createOffer firstParticipant
 
       # delete "firstParticipant" and swap array
-      delete signaler.participants[0]
-      signaler.participants = swap signaler.participants
+      delete self.participants[0]
+      self.participants = swap self.participants
 
       setTimeout !->
-        signaler.creatingOffer = false
-        if signaler.participants[0]
+        self.creatingOffer = false
+        if self.participants[0]
           repeatedlyCreateOffer!
       , 1000
 
@@ -262,9 +274,9 @@ do ->
 
     # it is passed over Offer/Answer objects for reusability
     options = 
-      onsdp: (sdp, to) !-> signaler.signal {sdp, to},
+      onsdp: (sdp, to) !-> self.signal \sdp, {sdp, to},
 
-      onicecandidate: (candidate, to) !-> signaler.signal {candidate, to},
+      onicecandidate: (candidate, to) !-> self.signal \ice, {candidate, to},
 
       onaddstream: (stream, _userid) ->
         
@@ -284,56 +296,15 @@ do ->
 
         afterRemoteStreamStartedFlowing = !->
           # for video conferencing
-          signaler.is-host && signaler.signal {conferencing: true, newcomer: _userid}
+          self.is-host && self.signal \new {conferencing: true, newcomer: _userid}
 
           root.onaddstream? video
 
         onRemoteStreamStartsFlowing!
 
-    # call only for session initiator
-    @host = (roomid) !->
-      signaler.is-host = true
-
-      do transmit = !->
-        signaler.signal {roomid, broadcasting: true}
-
-        if not signaler.stopBroadcasting and not root.transmitOnce
-          setTimeout transmit, 3000
-
     # called for each new participant
-    @join = (userid, roomid) !->
-      @signal {to: userid, participationRequest: true}
-      signaler.sentParticipationRequest = true
-
-    @on-signal = (data) !->
-      if data.leaving
-        root.onuserleft data.userid
-        return
-      
-      # if new room detected
-      if data.roomid and data.broadcasting and not signaler.sentParticipationRequest
-        root.onmeeting data
-
-      # if someone shared SDP
-      if data.sdp and data.to ~= userid
-        @onsdp data
-
-      # if someone shared ICE
-      if data.candidate and data.to ~= userid
-        @onice data
-
-      # if someone sent participation request
-      if data.participationRequest and data.to ~= userid
-        participationRequest data.userid
-
-      # session initiator transmitted new participant's details
-      # it is useful for multi-user connectivity
-      if data.conferencing and data.newcomer !~= userid and !!participants[data.newcomer] ~= false
-        participants[data.newcomer] = data.newcomer
-        root.stream && signaler.signal {
-          participationRequest: true
-          to: data.newcomer
-        }
+    @join = (roomid, callback) !->
+      @signal \join, {roomid}, callback
         
 
     @signal = !-> console.error 'No signalling function set!'

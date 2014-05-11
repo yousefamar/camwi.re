@@ -143,7 +143,6 @@
         self.part();
       });
     }
-    prototype.onmeeting = function(){};
     prototype.onuserleft = function(){};
     prototype._captureUserMedia = function(callback){
       var self, constraints, onstream, onerror;
@@ -176,30 +175,19 @@
       };
       navigator.getUserMedia(constraints, onstream, onerror);
     };
-    prototype.host = function(roomid){
+    prototype.join = function(roomid){
       var self;
       this.roomid = roomid;
       self = this;
       this._captureUserMedia(function(){
-        self.sig.host(roomid);
-      });
-    };
-    prototype.join = function(userid, roomid){
-      var self;
-      this.roomid = roomid;
-      self = this;
-      this._captureUserMedia(function(){
-        self.sig.join(userid, roomid);
+        self.sig.join(roomid, function(exists){
+          self.sig.isHost = !exists;
+        });
       });
     };
     prototype.part = function(){
       var ref$;
-      this.sig.signal({
-        leaving: true
-      });
-      if (this.sig.isHost) {
-        this.sig.stopBroadcasting = true;
-      }
+      this.sig.signal('part');
       if ((ref$ = this.stream) != null) {
         ref$.stop();
       }
@@ -207,43 +195,66 @@
     return VideoChat;
   }());
   return window.Signaler = function(root){
-    var userid, signaler, peers, participants, participationRequest, createOffer, repeatedlyCreateOffer, options;
+    var userid, self, peers, participants, createOffer, repeatedlyCreateOffer, options;
     this.userid = userid = getToken();
     this.isHost = false;
-    signaler = this;
+    self = this;
     peers = {};
     participants = {};
     this.connect = function(it){
-      var socket, sig;
+      var socket, x$;
       socket = io.connect(it);
-      this.signal = function(it){
-        it.userid = this.userid;
-        console.log('> ', it);
-        socket.send(JSON.stringify(it));
+      this.signal = function(event, data){
+        data = data || {};
+        data.userid = this.userid;
+        console.log('> ', event, data);
+        socket.emit(event, data);
       };
-      sig = this;
-      socket.on('message', function(it){
-        it = JSON.parse(it);
-        console.log('< ', it);
-        sig.onSignal(it);
-      });
-    };
-    participationRequest = function(_userid){
-      if (!signaler.creatingOffer) {
-        signaler.creatingOffer = true;
-        createOffer(_userid);
-        setTimeout(function(){
-          signaler.creatingOffer = false;
-          if (signaler.participants && signaler.participants.length) {
-            repeatedlyCreateOffer();
+      x$ = socket;
+      x$.on('join', function(userid){
+        console.log('< ', 'join', userid);
+        if (!self.creatingOffer) {
+          self.creatingOffer = true;
+          createOffer(userid);
+          setTimeout(function(){
+            self.creatingOffer = false;
+            if (self.participants && self.participants.length) {
+              repeatedlyCreateOffer();
+            }
+          }, 1000);
+        } else {
+          if (!self.participants) {
+            self.participants = [];
           }
-        }, 1000);
-      } else {
-        if (!signaler.participants) {
-          signaler.participants = [];
+          self.participants[self.participants.length] = userid;
         }
-        signaler.participants[signaler.participants.length] = _userid;
-      }
+      });
+      x$.on('part', function(data){
+        console.log('< ', 'part', data);
+        root.onuserleft(data.userid);
+        return;
+      });
+      x$.on('sdp', function(data){
+        console.log('< ', 'sdp', data);
+        if (data.to == userid) {
+          self.onsdp(data);
+        }
+      });
+      x$.on('ice', function(data){
+        console.log('< ', 'ice', data);
+        if (data.to == userid) {
+          self.onice(data);
+        }
+      });
+      x$.on('new', function(data){
+        console.log('< ', 'new', data);
+        if (data.conferencing && data.newcomer != userid && !!participants[data.newcomer] == false) {
+          participants[data.newcomer] = data.newcomer;
+          root.stream && self.signal('joinUsr', {
+            to: data.newcomer
+          }, function(){});
+        }
+      });
     };
     createOffer = function(unto){
       var _options;
@@ -254,17 +265,17 @@
     };
     repeatedlyCreateOffer = function(){
       var firstParticipant;
-      firstParticipant = signaler.participants[0];
+      firstParticipant = self.participants[0];
       if (!firstParticipant) {
         return;
       }
-      signaler.creatingOffer = true;
+      self.creatingOffer = true;
       createOffer(firstParticipant);
-      delete signaler.participants[0];
-      signaler.participants = swap(signaler.participants);
+      delete self.participants[0];
+      self.participants = swap(self.participants);
       setTimeout(function(){
-        signaler.creatingOffer = false;
-        if (signaler.participants[0]) {
+        self.creatingOffer = false;
+        if (self.participants[0]) {
           repeatedlyCreateOffer();
         }
       }, 1000);
@@ -292,13 +303,13 @@
     };
     options = {
       onsdp: function(sdp, to){
-        signaler.signal({
+        self.signal('sdp', {
           sdp: sdp,
           to: to
         });
       },
       onicecandidate: function(candidate, to){
-        signaler.signal({
+        self.signal('ice', {
           candidate: candidate,
           to: to
         });
@@ -324,7 +335,7 @@
           }
         };
         afterRemoteStreamStartedFlowing = function(){
-          signaler.isHost && signaler.signal({
+          self.isHost && self.signal('new', {
             conferencing: true,
             newcomer: _userid
           });
@@ -335,50 +346,10 @@
         return onRemoteStreamStartsFlowing();
       }
     };
-    this.host = function(roomid){
-      var transmit;
-      signaler.isHost = true;
-      (transmit = function(){
-        signaler.signal({
-          roomid: roomid,
-          broadcasting: true
-        });
-        if (!signaler.stopBroadcasting && !root.transmitOnce) {
-          setTimeout(transmit, 3000);
-        }
-      })();
-    };
-    this.join = function(userid, roomid){
-      this.signal({
-        to: userid,
-        participationRequest: true
-      });
-      signaler.sentParticipationRequest = true;
-    };
-    this.onSignal = function(data){
-      if (data.leaving) {
-        root.onuserleft(data.userid);
-        return;
-      }
-      if (data.roomid && data.broadcasting && !signaler.sentParticipationRequest) {
-        root.onmeeting(data);
-      }
-      if (data.sdp && data.to == userid) {
-        this.onsdp(data);
-      }
-      if (data.candidate && data.to == userid) {
-        this.onice(data);
-      }
-      if (data.participationRequest && data.to == userid) {
-        participationRequest(data.userid);
-      }
-      if (data.conferencing && data.newcomer != userid && !!participants[data.newcomer] == false) {
-        participants[data.newcomer] = data.newcomer;
-        root.stream && signaler.signal({
-          participationRequest: true,
-          to: data.newcomer
-        });
-      }
+    this.join = function(roomid, callback){
+      this.signal('join', {
+        roomid: roomid
+      }, callback);
     };
     this.signal = function(){
       console.error('No signalling function set!');
