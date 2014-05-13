@@ -5,8 +5,10 @@ window.WCIO.main = do
 
     vc = new VideoChat!
 
+    thumbs = document.getElementById \thumbnails
+
     vc.onaddstream = !->
-      document.body.appendChild it
+      thumbs.appendChild it
 
     vc.onuserleft = !->
         video = document.getElementById it
