@@ -1,37 +1,43 @@
 io = (require \socket.io).listen 9980
 
+uid = 0
 socks = {}
 rooms = {}
 
 io.sockets.on \connection, (socket) !->
+  do
+    uid := (uid + 1) % (Number.MAX_SAFE_INTEGER + 1)
+  while socks[uid]?
+  
+  socket.uid = uid
+  socks[uid] = socket
 
-  socket.on \leave, (data) !->
-    socket.broadcast.emit \leave, data
+  socket.emit \uid, uid
 
   socket.on \sdp, (data) !->
-    socket.broadcast.emit \sdp, data
+    if data.to? and socks[data.to]?
+      data.from = socket.uid
+      socks[data.to].emit \sdp, data
 
   socket.on \ice, (data) !->
-    socket.broadcast.emit \ice, data
+    if data.to? and socks[data.to]?
+      data.from = socket.uid
+      socks[data.to].emit \ice, data
 
   socket.on \new, (data) !->
-    socket.broadcast.emit \new, data
-
-  socket.on \joinUsr, (data, callback) !->
-    if data.to? and socks[data.to]? then socks[data.to].emit \join, data.userid
+    if data.to? and socks[data.to]? then socks[data.to].emit \join, data.new
 
   socket.on \join, (data, callback) !->
-    if data.userid and !socks[data.userid]? then socks[data.userid] = socket
-
     if !data.roomid then return
     if data.roomid of rooms
-      rooms[data.roomid].host.socket.emit \join, data.userid
+      rooms[data.roomid].host.emit \join, socket.uid
       callback? true
     else
-      rooms[data.roomid] = {host: {data.userid, socket}}
+      rooms[data.roomid] = {host: socket}
       callback? false
 
   socket.on \part, (data) !->
-    socket.broadcast.emit \part, data
+    if data.to? and socks[data.to]? then socks[data.to].emit \part, socket.uid
 
   socket.on \disconnect, !->
+    delete socks[socket.uid]
