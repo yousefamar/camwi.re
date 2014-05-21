@@ -1,9 +1,9 @@
 # Many thanks to [Muaz Khan](https://github.com/muaz-khan) for introducing me to WebRTC video conferencing.
 # [This](https://developer.mozilla.org/en-US/docs/Web/Guide/API/WebRTC/WebRTC_architecture) is also really useful.
 
-window.WCIO = {}
+window.CAMWIRE = {}
 
-window.WCIO.main = do
+window.CAMWIRE.main = do
   RTCPeerConnection = window.mozRTCPeerConnection || window.webkitRTCPeerConnection
   RTCSessionDescription = window.mozRTCSessionDescription || window.RTCSessionDescription
   RTCIceCandidate = window.mozRTCIceCandidate || window.RTCIceCandidate
