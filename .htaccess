@@ -1,0 +1,11 @@
+RewriteEngine On
+
+RewriteCond %{SCRIPT_FILENAME} !-d
+RewriteCond %{SCRIPT_FILENAME} !-f
+
+RewriteRule ^([^/]*) .?room=$1 [L]
+
+<Files .htaccess>
+order allow,deny
+deny from all
+</Files>

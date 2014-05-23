@@ -13,6 +13,11 @@ html, body {
 
 body {
   background-color: #030c22; }
+  body > video {
+    display: block;
+    height: 100%;
+    margin-left: auto;
+    margin-right: auto; }
 
 #thumbnails {
   position: absolute;
@@ -21,25 +26,24 @@ body {
   white-space: nowrap;
   height: 20%;
   overflow-x: auto;
-  overflow-y: hidden;
-  background-color: #20293f;
-  border-top: 1px solid #3e3e53; }
-  #thumbnails video {
+  overflow-y: hidden; }
+  #thumbnails > video {
     height: 100%;
     display: inline-block;
-    background-color: #20293f;
-    border: 4px solid #20293f;
-    border-right-width: 0;
+    padding: 4px;
+    padding-right: 0;
     opacity: 1;
     -webkit-transition: -webkit-transform 0.1s;
-    transition: transform 0.1s; }
-    #thumbnails video:last-child {
-      border-right-width: 4px; }
-    #thumbnails video:hover {
+    transition: transform 0.1s;
+    /*&.talking {
+    	-webkit-transform: translateY(-4px);
+    	-moz-transform: translateY(-4px);
+    	-ms-transform: translateY(-4px);
+    	-o-transform: translateY(-4px);
+    	transform: translateY(-4px);
+    	//visibility: hidden;
+    }*/ }
+    #thumbnails > video:last-child {
+      padding-right: 4px; }
+    #thumbnails > video:hover {
       opacity: 0.5; }
-    #thumbnails video.talking {
-      -webkit-transform: translateY(-4px);
-      -moz-transform: translateY(-4px);
-      -ms-transform: translateY(-4px);
-      -o-transform: translateY(-4px);
-      transform: translateY(-4px); }

@@ -47,7 +47,6 @@ window.CAMWIRE.main = (RTCPeerConnection = window.mozRTCPeerConnection || window
       stream.onended = function(){
         self.onuserleft(userId);
       };
-      self.stream = stream;
       node = createCamNode(userId, stream);
       if (userId === self.user.id) {
         x$ = node;
@@ -270,28 +269,29 @@ window.CAMWIRE.main = (RTCPeerConnection = window.mozRTCPeerConnection || window
   };
   return Peer;
 }()), function(){
-  var vc, audioContext, thumbs, roomID, ref$;
+  var vc, thumbs, large, setLarge, roomID, ref$;
   vc = new VideoChat();
-  audioContext = new webkitAudioContext();
   thumbs = document.getElementById('thumbnails');
+  large = null;
+  setLarge = function(node){
+    if (large != null) {
+      thumbs.appendChild(large);
+      large.play();
+    }
+    large = node;
+    document.body.appendChild(large);
+    large.play();
+  };
   vc.onaddstream = function(video, stream){
-    var source, analyser;
-    source = audioContext.createMediaStreamSource(stream);
-    analyser = audioContext.createAnalyser();
-    source.connect(analyser);
-    setInterval(function(){
-      var freqByteData, volume;
-      freqByteData = new Uint8Array(analyser.frequencyBinCount);
-      analyser.getByteTimeDomainData(freqByteData);
-      volume = (Math.max.apply(Math, freqByteData) - 128) / 128;
-      video.className = volume ? 'talking' : '';
-    }, 100);
+    video.onclick = function(){
+      setLarge(video);
+    };
     thumbs.appendChild(video);
   };
   vc.onuserleft = function(it){
     var video;
     video = document.getElementById(it);
-    video && video.parentNode.removeChild(video);
+    video && video.parentNode.parentNode.removeChild(video.parentNode);
   };
   roomID = (ref$ = window.location.href.match(/[^/]+$/g)) != null ? ref$[0] : void 8;
   if (!roomID) {

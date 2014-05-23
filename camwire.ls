@@ -44,8 +44,6 @@ window.CAMWIRE.main = do
       (stream) !->
         stream.onended = !-> self.onuserleft user-id
 
-        self.stream = stream
-
         node = create-cam-node user-id, stream
 
         if user-id is self.user.id
@@ -199,26 +197,29 @@ window.CAMWIRE.main = do
   ->
     vc = new VideoChat!
 
-    audioContext = new webkitAudioContext!
     thumbs = document.getElementById \thumbnails
 
-    vc.onaddstream = (video, stream) !->
-      source = audioContext.createMediaStreamSource stream
-      analyser = audioContext.createAnalyser!
-      source.connect analyser
+    large = null
 
-      setInterval !->
-        freqByteData = new Uint8Array analyser.frequencyBinCount
-        analyser.getByteTimeDomainData freqByteData
-        volume = (Math.max.apply(Math, freqByteData) - 128)/128
-        video.className = if volume then \talking else ''
-      , 100
-      
+    set-large = (node) !->
+      if large?
+        thumbs.appendChild large
+        large.play!
+      large := node
+      document.body.appendChild large
+      large.play!
+
+    vc.onaddstream = (video, stream) !->
+      video.onclick = !-> set-large video
       thumbs.appendChild video
 
     vc.onuserleft = !->
       video = document.getElementById it
-      video && video.parentNode.removeChild video
+      video && video.parentNode.parentNode.removeChild video.parentNode
+    
+    #get-vars = {}
+    #window.location.href.replace /[?&]+([^=&]+)=([^&]*)/gi, (m,key,value) !-> get-vars[key] = value
+    #roomID = get-vars[\room]
 
     roomID = (window.location.href.match /[^/]+$/g)?[0]
     if not roomID
