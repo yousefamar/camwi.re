@@ -14,7 +14,7 @@ window.CAMWIRE.main = (RTCPeerConnection = window.mozRTCPeerConnection || window
   username: 'homeo'
 }), iceServers.iceServers = [STUN, TURN]), VideoChat = (function(){
   VideoChat.displayName = 'VideoChat';
-  var createCamNode, prototype = VideoChat.prototype, constructor = VideoChat;
+  var createCamNode, attachAnalyser, prototype = VideoChat.prototype, constructor = VideoChat;
   function VideoChat(){
     var self;
     this.user = {
@@ -55,7 +55,7 @@ window.CAMWIRE.main = (RTCPeerConnection = window.mozRTCPeerConnection || window
       }
       self.onaddstream(node, stream);
       if (typeof callback === 'function') {
-        callback(stream);
+        callback(node, stream);
       }
     };
   };
@@ -74,6 +74,20 @@ window.CAMWIRE.main = (RTCPeerConnection = window.mozRTCPeerConnection || window
   prototype.setSignaller = function(it){
     return this.sig = it;
   };
+  attachAnalyser = function(node, stream){
+    var audioContext, source, analyser;
+    audioContext = new webkitAudioContext();
+    source = audioContext.createMediaStreamSource(stream);
+    analyser = audioContext.createAnalyser();
+    source.connect(analyser);
+    return setInterval(function(){
+      var freqByteData, volume;
+      freqByteData = new Uint8Array(analyser.frequencyBinCount);
+      analyser.getByteTimeDomainData(freqByteData);
+      volume = (Math.max.apply(Math, freqByteData) - 128) / 128;
+      node.dataset.volume = volume;
+    }, 100);
+  };
   prototype.join = function(roomid){
     var self;
     if (this.sig == null) {
@@ -82,8 +96,9 @@ window.CAMWIRE.main = (RTCPeerConnection = window.mozRTCPeerConnection || window
     }
     roomid = roomid || getToken();
     self = this;
-    this._getUserMedia(function(stream){
+    this._getUserMedia(function(node, stream){
       self.stream = stream;
+      attachAnalyser(node, stream);
       self.sig.signal('join', {
         roomid: roomid
       }, function(exists){

@@ -53,7 +53,7 @@ window.CAMWIRE.main = do
 
         self.onaddstream node, stream
 
-        callback? stream
+        callback? node, stream
 
     _getUserMedia: (callback) !->
       constraints =
@@ -66,6 +66,19 @@ window.CAMWIRE.main = do
 
     set-signaller: -> @sig = it
 
+    attach-analyser = (node, stream) ->
+      audioContext = new webkitAudioContext!
+      source = audioContext.createMediaStreamSource stream
+      analyser = audioContext.createAnalyser!
+      source.connect analyser
+
+      setInterval !->
+        freqByteData = new Uint8Array analyser.frequencyBinCount
+        analyser.getByteTimeDomainData freqByteData
+        volume = (Math.max.apply(Math, freqByteData) - 128)/128
+        node.dataset.volume = volume
+      , 100
+
     join: (roomid) !->
       if !@sig?
         console.error 'No signaller set!'
@@ -73,8 +86,9 @@ window.CAMWIRE.main = do
 
       roomid = roomid || getToken!
       self = @
-      stream <-! @_getUserMedia
+      node, stream <-! @_getUserMedia
       self.stream = stream
+      attach-analyser node, stream
       exists <-! self.sig.signal \join, {roomid}, _
       self.user.is-host = not exists
 
