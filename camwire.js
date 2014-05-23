@@ -302,6 +302,6 @@ window.CAMWIRE.main = (RTCPeerConnection = window.mozRTCPeerConnection || window
   }
   return vc.setSignaller(new SignallerSocketIO(vc)).connect("http://amar.io:9980", function(){
     console.log("Joining room " + roomID);
-    vc.join("webcamio-" + roomID);
+    vc.join("camwire-" + roomID);
   });
 });

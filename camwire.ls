@@ -229,4 +229,4 @@ window.CAMWIRE.main = do
     <-! vc.set-signaller new SignallerSocketIO vc
       .connect "http://amar.io:9980", _
     console.log "Joining room #{roomID}"
-    vc.join "webcamio-#{roomID}"
+    vc.join "camwire-#{roomID}"
