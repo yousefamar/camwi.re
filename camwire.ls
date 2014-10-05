@@ -210,7 +210,8 @@ window.CAMWIRE.main = do
 
     vc.onuserleft = !->
       video = document.getElementById it
-      video && video.parentNode.parentNode.removeChild video.parentNode
+      video && video.parentNode.removeChild video
+      if video is large then large := null
 
     #get-vars = {}
     #window.location.href.replace /[?&]+([^=&]+)=([^&]*)/gi, (m,key,value) !-> get-vars[key] = value

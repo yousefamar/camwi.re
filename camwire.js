@@ -275,7 +275,10 @@ window.CAMWIRE.main = (RTCPeerConnection = window.mozRTCPeerConnection || window
   vc.onuserleft = function(it){
     var video;
     video = document.getElementById(it);
-    video && video.parentNode.parentNode.removeChild(video.parentNode);
+    video && video.parentNode.removeChild(video);
+    if (video === large) {
+      large = null;
+    }
   };
   roomID = (ref$ = window.location.href.match(/[^/]+$/g)) != null ? ref$[0] : void 8;
   if (!roomID) {
