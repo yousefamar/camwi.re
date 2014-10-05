@@ -1,7 +1,8 @@
 # Many thanks to [Muaz Khan](https://github.com/muaz-khan) for introducing me to WebRTC video conferencing.
 # [This](https://developer.mozilla.org/en-US/docs/Web/Guide/API/WebRTC/WebRTC_architecture) is also really useful.
 
-window.CAMWIRE = {}
+window.CAMWIRE =
+  DEBUG: true
 
 window.CAMWIRE.main = do
   RTCPeerConnection = window.mozRTCPeerConnection || window.webkitRTCPeerConnection
@@ -22,8 +23,7 @@ window.CAMWIRE.main = do
 
   class VideoChat
     ->
-      @user =
-        is-host: false
+      @user = {}
 
       self = @
       window.addEventListener \beforeunload, !-> self.part!
@@ -71,20 +71,17 @@ window.CAMWIRE.main = do
         console.error 'No signaller set!'
         return
 
-      roomid = roomid || getToken!
       self = @
       stream <-! @_getUserMedia
       self.stream = stream
-      exists <-! self.sig.signal \join, {roomid}, _
-      self.user.is-host = not exists
+      self.sig.signal \join, {roomid}
 
     part: !->
       if !@sig?
         console.error 'No signaller set!'
         return
 
-      for key, peer of @sig.peers
-        @sig.signal \part {to: peer.user-id}
+      @sig.signal \part
       @stream?.stop!
 
 
@@ -120,15 +117,13 @@ window.CAMWIRE.main = do
 
         ..on \join, (user-id) !->
           console.log '< ', \join, user-id
-          if self.vc.user.is-host
-            for key, peer of self.peers
-              self.signal \new {to: peer.user-id, new: user-id}
           self.peers[user-id] = new Peer user-id, self
             ..addStream self.vc.stream
             ..createOffer!
-        
+
         ..on \part, (user-id) !->
           console.log '< ', \part, user-id
+          delete self.peers[user-id]
           self.vc.onuserleft user-id
           return
 
@@ -216,7 +211,7 @@ window.CAMWIRE.main = do
     vc.onuserleft = !->
       video = document.getElementById it
       video && video.parentNode.parentNode.removeChild video.parentNode
-    
+
     #get-vars = {}
     #window.location.href.replace /[?&]+([^=&]+)=([^&]*)/gi, (m,key,value) !-> get-vars[key] = value
     #roomID = get-vars[\room]
@@ -227,6 +222,6 @@ window.CAMWIRE.main = do
       window.history.replaceState {}, "New Room ID", "/#{roomID}"
 
     <-! vc.set-signaller new SignallerSocketIO vc
-      .connect "http://amar.io:9980", _
+      .connect if window.CAMWIRE.DEBUG then "http://localhost:9980" else "http://amar.io:9980", _
     console.log "Joining room #{roomID}"
     vc.join "camwire-#{roomID}"

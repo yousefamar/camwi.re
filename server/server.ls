@@ -4,11 +4,22 @@ uid = 0
 socks = {}
 rooms = {}
 
+part = (uid) !->
+  if !sock = socks[uid] then return
+  delete socks[uid]
+  if sock.rid?
+    delete rooms[sock.rid][uid]
+    for uid-other of rooms[sock.rid] then if socks[uid-other]? then socks[uid-other].emit \part, uid
+    for uid-other of rooms[sock.rid] then return
+    delete rooms[sock.rid]
+
 io.sockets.on \connection, (socket) !->
   do
-    uid := (uid + 1) % (Number.MAX_SAFE_INTEGER + 1)
+    # NOTE: Node has no limit; Chrome does.
+    #uid := (uid + 1) % (Number.MAX_SAFE_INTEGER + 1)
+    uid++
   while socks[uid]?
-  
+
   socket.uid = uid
   socks[uid] = socket
 
@@ -24,20 +35,12 @@ io.sockets.on \connection, (socket) !->
       data.from = socket.uid
       socks[data.to].emit \ice, data
 
-  socket.on \new, (data) !->
-    if data.to? and socks[data.to]? then socks[data.to].emit \join, data.new
-
-  socket.on \join, (data, callback) !->
+  socket.on \join, (data) !->
     if !data.roomid then return
-    if data.roomid of rooms
-      rooms[data.roomid].host.emit \join, socket.uid
-      callback? true
-    else
-      rooms[data.roomid] = {host: socket}
-      callback? false
+    for uid of rooms[data.roomid] then socks[uid]?.emit \join, socket.uid
+    if data.roomid not of rooms then rooms[data.roomid] = {}
+    rooms[data.roomid][socket.uid] = socket
 
-  socket.on \part, (data) !->
-    if data.to? and socks[data.to]? then socks[data.to].emit \part, socket.uid
+  socket.on \part, !-> part socket.uid
 
-  socket.on \disconnect, !->
-    delete socks[socket.uid]
+  socket.on \disconnect, !-> part socket.uid
