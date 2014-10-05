@@ -39,6 +39,7 @@ io.sockets.on \connection, (socket) !->
     if !data.roomid then return
     for uid of rooms[data.roomid] then socks[uid]?.emit \join, socket.uid
     if data.roomid not of rooms then rooms[data.roomid] = {}
+    socket.rid = data.roomid
     rooms[data.roomid][socket.uid] = socket
 
   socket.on \part, !-> part socket.uid

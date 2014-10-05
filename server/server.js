@@ -55,6 +55,7 @@ io.sockets.on('connection', function(socket){
     if (!(data.roomid in rooms)) {
       rooms[data.roomid] = {};
     }
+    socket.rid = data.roomid;
     rooms[data.roomid][socket.uid] = socket;
   });
   socket.on('part', function(){
