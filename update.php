@@ -3,7 +3,7 @@
 	if (strpos($_SERVER["REMOTE_ADDR"], "192.30.252.") !== 0)
 		header("Location: /");
 
-	exec("cd /home/amar/public_html/camwi.re/ && git up");
+	exec("cd /home/amar/public_html/camwi.re/ && sudo git up");
 
 	/*
 	ob_start();
