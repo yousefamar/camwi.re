@@ -2,7 +2,7 @@
 # [This](https://developer.mozilla.org/en-US/docs/Web/Guide/API/WebRTC/WebRTC_architecture) is also really useful.
 
 window.CAMWIRE =
-  DEBUG: true
+  DEBUG: false
 
 window.CAMWIRE.main = do
   RTCPeerConnection = window.mozRTCPeerConnection || window.webkitRTCPeerConnection
