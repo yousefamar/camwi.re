@@ -287,7 +287,7 @@ window.CAMWIRE.main = (RTCPeerConnection = window.mozRTCPeerConnection || window
     });
     window.history.replaceState({}, "New Room ID", "/" + roomID);
   }
-  return vc.setSignaller(new SignallerSocketIO(vc)).connect(window.CAMWIRE.DEBUG ? "http://localhost:9980" : "http://amar.io:9980", function(){
+  return vc.setSignaller(new SignallerSocketIO(vc)).connect(window.CAMWIRE.DEBUG ? "http://localhost:9980" : "http://camwi.re:9980", function(){
     console.log("Joining room " + roomID);
     vc.join("camwire-" + roomID);
   });

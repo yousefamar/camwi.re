@@ -223,6 +223,6 @@ window.CAMWIRE.main = do
       window.history.replaceState {}, "New Room ID", "/#{roomID}"
 
     <-! vc.set-signaller new SignallerSocketIO vc
-      .connect if window.CAMWIRE.DEBUG then "http://localhost:9980" else "http://amar.io:9980", _
+      .connect if window.CAMWIRE.DEBUG then "http://localhost:9980" else "http://camwi.re:9980", _
     console.log "Joining room #{roomID}"
     vc.join "camwire-#{roomID}"
