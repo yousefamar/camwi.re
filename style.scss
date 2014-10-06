@@ -4,6 +4,7 @@ $mg1: #3E3E53;
 $mg2: #404749;
 $fgDark: #A9B0B3;
 $fgLight: #E5E7E8;
+$link: #E0D498;
 
 * {
 	margin: 0;
@@ -30,6 +31,13 @@ body {
 		margin-left: auto;
 		margin-right: auto;
 	}
+}
+a {
+	text-decoration:none;
+	&:link {color: $link;}
+	&:visited {color: desaturate($link, 20%);}
+	&:hover {color: complement($link);}
+	&:active {color: lighten($link, 50%);}
 }
 #thumbnails {
 	position: absolute;
@@ -70,3 +78,52 @@ body {
 		}*/
 	}
 }
+#help-button {
+	position: absolute;
+	top: 0;
+	right: 0;
+	margin: 5px;
+	padding: 10px;
+	color: white;
+	background-color: $bgLight;
+	font-weight: bold;
+	border-radius: 5px;
+	cursor: default;
+	&:hover {
+		background-color: $mg1;
+	}
+}
+#help {
+	position: absolute;
+	top: 45px;
+	left: 0;
+	right: 0;
+	visibility: hidden;
+	h1 {
+		color: $fgDark;
+	}
+	ul {
+		margin: 1em;
+		margin-left: 2em;
+	}
+	color: $fgLight;
+	background-color: $bgLight;
+	border: 2px solid $link;
+	border-radius: 10px;
+	margin: 10px;
+	padding: 10px;
+}
+#close-button {
+	text-align: center;
+	margin: 5px;
+	padding: 10px;
+	color: white;
+	background-color: $mg1;
+	font-weight: bold;
+	border-radius: 5px;
+	cursor: default;
+	&:hover {
+		background-color: $mg2;
+	}
+}
+

@@ -11,5 +11,17 @@
 <body onload="CAMWIRE.main()">
 	<div id="thumbnails">
 	</div>
+	<div id="help-button" onclick="document.getElementById('help').style.visibility = 'visible';">?</div>
+	<div id="help">
+		<h1>Camwi.re Help</h1>
+		<ul>
+			<li>Camwi.re is the simplest, browser-based, peer-to-peer video chat platform ever.</li>
+			<li>All rooms are public and all users equal.</li>
+			<li>Create or join rooms by navigating to http://camwi.re/<b>[room name]</b></li>
+			<li>Click/tap video stream thumbnails to enlarge them.</li>
+			<li>Send issues, feedback, and suggestions to <a href="mailto:yousef@amar.io?Subject=Camwi.re%20Feedback">yousef@amar.io</a>.</li>
+		</ul>
+		<div id="close-button" onclick="document.getElementById('help').style.visibility = '';">Close</div>
+	</div>
 </body>
 </html>
