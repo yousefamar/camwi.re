@@ -60,7 +60,7 @@ window.CAMWIRE.main = do
         audio: true
         video: true
       onstream = @build-stream-handler @user.id, callback
-      onerror = !-> console.error it
+      onerror = !-> window.alert it
 
       navigator.getUserMedia constraints, onstream, onerror
 

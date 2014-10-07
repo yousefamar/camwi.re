@@ -67,7 +67,7 @@ window.CAMWIRE.main = (RTCPeerConnection = window.mozRTCPeerConnection || window
     };
     onstream = this.buildStreamHandler(this.user.id, callback);
     onerror = function(it){
-      console.error(it);
+      window.alert(it);
     };
     navigator.getUserMedia(constraints, onstream, onerror);
   };
