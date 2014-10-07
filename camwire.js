@@ -67,7 +67,9 @@ window.CAMWIRE.main = (RTCPeerConnection = window.mozRTCPeerConnection || window
     };
     onstream = this.buildStreamHandler(this.user.id, callback);
     onerror = function(it){
-      window.alert(it);
+      window.alert(it.name === 'PermissionDeniedError'
+        ? "Camwi.re could not access your camera. Make sure you granted your browser permission to do so!"
+        : "Something went wrong: " + it.name);
     };
     navigator.getUserMedia(constraints, onstream, onerror);
   };

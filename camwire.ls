@@ -60,7 +60,7 @@ window.CAMWIRE.main = do
         audio: true
         video: true
       onstream = @build-stream-handler @user.id, callback
-      onerror = !-> window.alert it
+      onerror = !-> window.alert if it.name is \PermissionDeniedError then "Camwi.re could not access your camera. Make sure you granted your browser permission to do so!" else "Something went wrong: #{it.name}"
 
       navigator.getUserMedia constraints, onstream, onerror
 
