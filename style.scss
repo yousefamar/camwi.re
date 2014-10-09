@@ -40,6 +40,67 @@ a {
 	&:hover {color: complement($link);}
 	&:active {color: lighten($link, 50%);}
 }
+#help-button {
+	position: absolute;
+	top: 0;
+	right: 0;
+	margin: 5px;
+	padding: 10px;
+	color: white;
+	background-color: $bgLight;
+	font-weight: bold;
+	border-radius: 5px;
+	cursor: default;
+	&:hover {
+		background-color: $mg1;
+	}
+}
+#help {
+	position: absolute;
+	top: 45px;
+	left: 0;
+	right: 0;
+	visibility: hidden;
+	.COINWIDGETCOM_CONTAINER {
+		position: absolute;
+		top: 0;
+		right: 0;
+		margin: 5px;
+		.COINWIDGETCOM_BUTTON_BITCOIN {
+			padding: 0;
+			background-color: $mg1;
+		}
+		& > span {
+			display: none;
+		}
+	}
+	h1 {
+		color: $fgDark;
+	}
+	ul {
+		margin: 1em;
+		margin-left: 2em;
+	}
+	color: $fgLight;
+	background-color: $bgLight;
+	border: 2px solid $link;
+	border-radius: 10px;
+	margin: 10px;
+	padding: 10px;
+}
+#close-button {
+	text-align: center;
+	margin: 5px;
+	padding: 10px;
+	color: white;
+	background-color: $mg1;
+	font-weight: bold;
+	border-radius: 5px;
+	cursor: default;
+	&:hover {
+		background-color: $mg2;
+	}
+}
 #thumbnails {
 	position: absolute;
 	bottom: 0;
@@ -79,52 +140,3 @@ a {
 		}*/
 	}
 }
-#help-button {
-	position: absolute;
-	top: 0;
-	right: 0;
-	margin: 5px;
-	padding: 10px;
-	color: white;
-	background-color: $bgLight;
-	font-weight: bold;
-	border-radius: 5px;
-	cursor: default;
-	&:hover {
-		background-color: $mg1;
-	}
-}
-#help {
-	position: absolute;
-	top: 45px;
-	left: 0;
-	right: 0;
-	visibility: hidden;
-	h1 {
-		color: $fgDark;
-	}
-	ul {
-		margin: 1em;
-		margin-left: 2em;
-	}
-	color: $fgLight;
-	background-color: $bgLight;
-	border: 2px solid $link;
-	border-radius: 10px;
-	margin: 10px;
-	padding: 10px;
-}
-#close-button {
-	text-align: center;
-	margin: 5px;
-	padding: 10px;
-	color: white;
-	background-color: $mg1;
-	font-weight: bold;
-	border-radius: 5px;
-	cursor: default;
-	&:hover {
-		background-color: $mg2;
-	}
-}
-

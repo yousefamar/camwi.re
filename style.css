@@ -33,6 +33,60 @@ a {
   a:active {
     color: white; }
 
+#help-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 5px;
+  padding: 10px;
+  color: white;
+  background-color: #20293f;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: default; }
+  #help-button:hover {
+    background-color: #3e3e53; }
+
+#help {
+  position: absolute;
+  top: 45px;
+  left: 0;
+  right: 0;
+  visibility: hidden;
+  color: #e5e7e8;
+  background-color: #20293f;
+  border: 2px solid #e0d498;
+  border-radius: 10px;
+  margin: 10px;
+  padding: 10px; }
+  #help .COINWIDGETCOM_CONTAINER {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 5px; }
+    #help .COINWIDGETCOM_CONTAINER .COINWIDGETCOM_BUTTON_BITCOIN {
+      padding: 0;
+      background-color: #3e3e53; }
+    #help .COINWIDGETCOM_CONTAINER > span {
+      display: none; }
+  #help h1 {
+    color: #a9b0b3; }
+  #help ul {
+    margin: 1em;
+    margin-left: 2em; }
+
+#close-button {
+  text-align: center;
+  margin: 5px;
+  padding: 10px;
+  color: white;
+  background-color: #3e3e53;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: default; }
+  #close-button:hover {
+    background-color: #404749; }
+
 #thumbnails {
   position: absolute;
   bottom: 0;
@@ -61,47 +115,3 @@ a {
       padding-right: 4px; }
     #thumbnails > video:hover {
       opacity: 0.5; }
-
-#help-button {
-  position: absolute;
-  top: 0;
-  right: 0;
-  margin: 5px;
-  padding: 10px;
-  color: white;
-  background-color: #20293f;
-  font-weight: bold;
-  border-radius: 5px;
-  cursor: default; }
-  #help-button:hover {
-    background-color: #3e3e53; }
-
-#help {
-  position: absolute;
-  top: 45px;
-  left: 0;
-  right: 0;
-  visibility: hidden;
-  color: #e5e7e8;
-  background-color: #20293f;
-  border: 2px solid #e0d498;
-  border-radius: 10px;
-  margin: 10px;
-  padding: 10px; }
-  #help h1 {
-    color: #a9b0b3; }
-  #help ul {
-    margin: 1em;
-    margin-left: 2em; }
-
-#close-button {
-  text-align: center;
-  margin: 5px;
-  padding: 10px;
-  color: white;
-  background-color: #3e3e53;
-  font-weight: bold;
-  border-radius: 5px;
-  cursor: default; }
-  #close-button:hover {
-    background-color: #404749; }
