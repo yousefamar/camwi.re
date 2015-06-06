@@ -217,7 +217,7 @@ window.CAMWIRE.main = do
     #window.location.href.replace /[?&]+([^=&]+)=([^&]*)/gi, (m,key,value) !-> get-vars[key] = value
     #roomID = get-vars[\room]
 
-    roomID = (window.location.href.match /[^/]+$/g)?[0]
+    roomID = window.location.pathname.substring(1)
     if not roomID
       roomID := 'xxxxxx'.replace /[x]/g, -> (Math.random!*36.|.0).toString 36
       window.history.replaceState {}, "New Room ID", "/#{roomID}"
