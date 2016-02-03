@@ -1,0 +1,32 @@
+{
+  "name": "camwi.re",
+  "version": "0.1.0",
+  "description": "video chat client",
+  "main": "server/server.js",
+  "dependencies": {
+    "socket.io": "^1.4.5",
+    "st": "^1.1.0"
+  },
+  "devDependencies": {
+    "anyify": "^1.0.1",
+    "browserify": "^13.0.0",
+    "livescript": "^1.4.0",
+    "node-sass": "^3.4.2",
+    "socket.io-client": "^1.4.5"
+  },
+  "scripts": {
+    "prepublish": "make all",
+    "start": "node lib/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yousefamar/camwi.re.git"
+  },
+  "author": "Yousef Amar <yousefamar@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yousefamar/camwi.re/issues"
+  },
+  "homepage": "https://github.com/yousefamar/camwi.re#readme"
+}

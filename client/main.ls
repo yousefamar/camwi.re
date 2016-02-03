@@ -1,6 +1,8 @@
 # Many thanks to [Muaz Khan](https://github.com/muaz-khan) for introducing me to WebRTC video conferencing.
 # [This](https://developer.mozilla.org/en-US/docs/Web/Guide/API/WebRTC/WebRTC_architecture) is also really useful.
 
+io = require 'socket.io-client'
+
 window.CAMWIRE =
   DEBUG: false
 
@@ -223,6 +225,6 @@ window.CAMWIRE.main = do
       window.history.replaceState {}, "New Room ID", "/#{roomID}"
 
     <-! vc.set-signaller new SignallerSocketIO vc
-      .connect if window.CAMWIRE.DEBUG then "http://localhost:9980" else "http://camwi.re:9980", _
+      .connect (window.location.protocol + '//' + window.location.hostname + ':' + 9980), _
     console.log "Joining room #{roomID}"
     vc.join "camwire-#{roomID}"
