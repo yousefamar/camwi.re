@@ -10,7 +10,8 @@
     "anyify": "^1.0.1",
     "browserify": "^13.0.0",
     "livescript": "^1.4.0",
-    "node-sass": "^3.4.2"
+    "node-sass": "^3.4.2",
+    "socket.io-client": "^1.4.5"
   },
   "scripts": {
     "prepublish": "make all",

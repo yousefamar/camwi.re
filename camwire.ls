@@ -1,6 +1,8 @@
 # Many thanks to [Muaz Khan](https://github.com/muaz-khan) for introducing me to WebRTC video conferencing.
 # [This](https://developer.mozilla.org/en-US/docs/Web/Guide/API/WebRTC/WebRTC_architecture) is also really useful.
 
+io = require 'socket.io-client'
+
 window.CAMWIRE =
   DEBUG: false
 
