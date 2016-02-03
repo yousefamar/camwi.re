@@ -1,4 +1,8 @@
 io = (require \socket.io).listen 9980
+require! <[ http st ]>
+
+http.create-server st path : process.cwd!, index : \index.html
+  ..listen 8000
 
 uid = 0
 socks = {}
