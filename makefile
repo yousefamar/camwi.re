@@ -1,18 +1,33 @@
 export PATH := $(shell npm bin):$(PATH)
 
-all: camwire.min.js server/server.js style.css
+# Directory for built server-side files
+LIB=lib
+# Directory for built client-side files
+STATIC=static
 
-server/server.js: server/server.ls
-	lsc -c $<
+all: server client
 
-camwire.min.js: camwire.ls
-	# TODO Actually minify. :) This is just a basic bundle.
+server: $(LIB)/server.js
+
+client: $(STATIC)/index.html $(STATIC)/main.js $(STATIC)/style.css
+
+$(LIB)/server.js: server/main.ls
+	@mkdir -p $(LIB)
+	lsc --compile --print $< > $@
+
+$(STATIC)/main.js: client/main.ls
+	@mkdir -p $(STATIC)
 	browserify -t [ anyify --ls [ livescript?compile ] ] $< > $@
 
-style.css: style.scss
+$(STATIC)/style.css: style.scss
+	@mkdir -p $(STATIC)
 	node-sass $< > $@
 
-clean:
-	@rm -rf camwire.min.js server/server.js style.css
+$(STATIC)/index.html: index.html
+	@mkdir -p $(STATIC)
+	cp $< $@
 
-.PHONY: all clean
+clean:
+	@rm -rf $(STATIC) $(LIB)
+
+.PHONY: all client server clean

@@ -16,7 +16,7 @@
   },
   "scripts": {
     "prepublish": "make all",
-    "start": "node server/server.js",
+    "start": "node lib/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
