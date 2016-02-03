@@ -2,7 +2,7 @@
   "name": "camwi.re",
   "version": "0.1.0",
   "description": "video chat client",
-  "main": "index.js",
+  "main": "server/server.js",
   "dependencies": {
     "socket.io": "^1.4.5"
   },
@@ -19,12 +19,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Paraknight/camwi.re.git"
+    "url": "git+https://github.com/yousefamar/camwi.re.git"
   },
   "author": "Yousef Amar <yousefamar@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Paraknight/camwi.re/issues"
+    "url": "https://github.com/yousefamar/camwi.re/issues"
   },
-  "homepage": "https://github.com/Paraknight/camwi.re#readme"
+  "homepage": "https://github.com/yousefamar/camwi.re#readme"
 }
