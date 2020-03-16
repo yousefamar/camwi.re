@@ -16,19 +16,15 @@ window.CAMWIRE.main = do
   isChrome = !!navigator.webkitGetUserMedia
 
   STUN = {url: if isChrome then 'stun:stun.l.google.com:19302' else 'stun:23.21.150.121'}
-  TURN = {url: 'turn:homeo@turn.bistri.com:80', credential: 'homeo'}
-  iceServers = {iceServers: [STUN]};
-  if isChrome
-    if parseInt (navigator.userAgent.match /Chrom(e|ium)\/([0-9]+)\./)[2] >= 28
-      TURN = {url: 'turn:turn.bistri.com:80', credential: 'homeo', username: 'homeo'}
-    iceServers.iceServers = [STUN, TURN]
+  TURN = {url: 'turn:turn.bistri.com:80', credential: 'homeo', username: 'homeo'}
+  iceServers = iceServers: [STUN, TURN]
 
   class VideoChat
     ->
       @user = {}
 
       self = @
-      window.addEventListener \beforeunload, !-> self.part!
+      window.addEventListener \beforeunload, !-> self.leave!
 
     onaddstream: (video, stream) ->
     onuserleft: (user-id) ->
@@ -36,7 +32,7 @@ window.CAMWIRE.main = do
     create-cam-node = (id, stream) ->
       video = document.createElement \video
         ..id = id
-        ..[if isFirefox then \mozSrcObject else \src] = if isFirefox then stream else window.webkitURL.createObjectURL stream
+        ..srcObject = stream
         ..autoplay = true
         ..controls = false
         ..play!
@@ -78,12 +74,12 @@ window.CAMWIRE.main = do
       self.stream = stream
       self.sig.signal \join, {roomid}
 
-    part: !->
+    leave: !->
       if !@sig?
         console.error 'No signaller set!'
         return
 
-      @sig.signal \part
+      @sig.signal \leave
       @stream?.stop!
 
 
@@ -123,8 +119,8 @@ window.CAMWIRE.main = do
             ..addStream self.vc.stream
             ..createOffer!
 
-        ..on \part, (user-id) !->
-          console.log '< ', \part, user-id
+        ..on \leave, (user-id) !->
+          console.log '< ', \leave, user-id
           delete self.peers[user-id]
           self.vc.onuserleft user-id
           return
@@ -225,6 +221,6 @@ window.CAMWIRE.main = do
       window.history.replaceState {}, "New Room ID", "/#{roomID}"
 
     <-! vc.set-signaller new SignallerSocketIO vc
-      .connect (window.location.protocol + '//' + window.location.hostname + ':' + 9980), _
+      .connect (window.location.protocol + '//' + window.location.hostname), _
     console.log "Joining room #{roomID}"
     vc.join "camwire-#{roomID}"

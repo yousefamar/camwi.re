@@ -1,20 +1,23 @@
-io = (require \socket.io).listen 9980
-require! <[ http st ]>
+require! <[ http express socket.io ]>
 
-st path : process.cwd! + "/static", index : \index.html
-|> http.create-server
-  ..listen 8000
+app = express!
+server = http.Server app
+io = socket server
+
+app.use '/' express.static \static
+
+app.get '/*' (req, res) !-> res.send-file 'static/index.html' root: './'
 
 uid = 0
 socks = {}
 rooms = {}
 
-part = (uid) !->
+leave = (uid) !->
   if !sock = socks[uid] then return
   delete socks[uid]
   if sock.rid?
     delete rooms[sock.rid][uid]
-    for uid-other of rooms[sock.rid] then if socks[uid-other]? then socks[uid-other].emit \part, uid
+    for uid-other of rooms[sock.rid] then if socks[uid-other]? then socks[uid-other].emit \leave, uid
     for uid-other of rooms[sock.rid] then return
     delete rooms[sock.rid]
 
@@ -47,6 +50,8 @@ io.sockets.on \connection, (socket) !->
     socket.rid = data.roomid
     rooms[data.roomid][socket.uid] = socket
 
-  socket.on \part, !-> part socket.uid
+  socket.on \leave, !-> leave socket.uid
 
-  socket.on \disconnect, !-> part socket.uid
+  socket.on \disconnect, !-> leave socket.uid
+
+server.listen (process.env.PORT || 8091)
