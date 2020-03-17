@@ -11,11 +11,12 @@ let addStream = (id, stream) => {
 	video.autoplay = true;
 	video.controls = false;
 	video.onclick = () => setLarge(video);
-	video.play();
 	let thumbs = document.getElementById('thumbnails');
 	thumbs.appendChild(video);
 	if (largeVideo === null && id !== ownID)
 		setLarge(video);
+	else
+		video.play();
 };
 
 let setLarge = node => {
