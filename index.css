@@ -1,0 +1,118 @@
+* {
+  margin: 0;
+  padding: 0;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box; }
+  *:focus {
+    outline: none; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden; }
+
+body {
+  background-color: #030C22; }
+  body > video {
+    display: block;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    margin-left: auto;
+    margin-right: auto; }
+
+a {
+  text-decoration: none; }
+  a:link {
+    color: #E0D498; }
+  a:visited {
+    color: #d3cba5; }
+  a:hover {
+    color: #98a4e0; }
+  a:active {
+    color: white; }
+
+#help-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 5px;
+  padding: 10px;
+  color: white;
+  background-color: #20293F;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: default; }
+  #help-button:hover {
+    background-color: #3E3E53; }
+
+#help {
+  position: absolute;
+  top: 45px;
+  left: 0;
+  right: 0;
+  visibility: hidden;
+  color: #E5E7E8;
+  background-color: #20293F;
+  border: 2px solid #E0D498;
+  border-radius: 10px;
+  margin: 10px;
+  padding: 10px; }
+  #help .COINWIDGETCOM_CONTAINER {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 5px; }
+    #help .COINWIDGETCOM_CONTAINER .COINWIDGETCOM_BUTTON_BITCOIN {
+      padding: 0;
+      background-color: #3E3E53; }
+    #help .COINWIDGETCOM_CONTAINER > span {
+      display: none; }
+  #help h1 {
+    color: #A9B0B3; }
+  #help ul {
+    margin: 1em;
+    margin-left: 2em; }
+
+#close-button {
+  text-align: center;
+  margin: 5px;
+  padding: 10px;
+  color: white;
+  background-color: #3E3E53;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: default; }
+  #close-button:hover {
+    background-color: #404749; }
+
+#thumbnails {
+  position: absolute;
+  bottom: 0;
+  white-space: nowrap;
+  width: 100%;
+  height: 20%;
+  overflow-x: auto;
+  overflow-y: hidden; }
+  #thumbnails > video {
+    height: 100%;
+    display: inline-block;
+    padding: 4px;
+    padding-right: 0;
+    opacity: 1;
+    -webkit-transition: -webkit-transform 0.1s;
+    transition: transform 0.1s;
+    /*&.talking {
+			-webkit-transform: translateY(-4px);
+			-moz-transform: translateY(-4px);
+			-ms-transform: translateY(-4px);
+			-o-transform: translateY(-4px);
+			transform: translateY(-4px);
+			//visibility: hidden;
+		}*/ }
+    #thumbnails > video:last-child {
+      padding-right: 4px; }
+    #thumbnails > video:hover {
+      opacity: 0.5; }
+

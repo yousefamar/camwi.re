@@ -23,12 +23,17 @@
 	<meta name="msapplication-TileImage" content="/res/icons/mstile-144x144.png">
 	<meta name="msapplication-config" content="/res/icons/browserconfig.xml">
 
-	<link rel="stylesheet" href="/style.css"></link>
-	<script src="/main.js"></script>
+	<link rel="stylesheet" href="index.css"></link>
+	<script type="module" src="index.js"></script>
 	<script src="http://coinwidget.com/widget/coin.js"></script>
 </head>
-<body onload="CAMWIRE.main()">
+<body>
 	<div id="help-button" onclick="document.getElementById('help').style.visibility = 'visible';">?</div>
+	<dialog id="startDialog" open>
+		<p>You're about to join the room <span id="roomID"></span>.</p>
+		<button id="camButton"  onclick="turnOnCam()">Start Cam</button>
+		<button id="joinButton" onclick="joinRoom()" disabled>Join Room</button>
+	</dialog>
 	<div id="help">
 		<script>
 			CoinWidgetCom.go({
