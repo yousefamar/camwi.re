@@ -6,11 +6,13 @@ let largeVideo = null;
 
 let addStream = (id, stream) => {
 	let video = document.createElement('video');
-	video.id = id;
-	video.srcObject = stream;
-	video.autoplay = true;
-	video.controls = false;
-	video.onclick = () => setLarge(video);
+	video.id          = id;
+	video.srcObject   = stream;
+	video.playsinline = true;
+	video.autoplay    = true;
+	video.controls    = false;
+	video.muted       = id === ownID;
+	video.onclick     = () => setLarge(video);
 	let thumbs = document.getElementById('thumbnails');
 	thumbs.appendChild(video);
 	if (largeVideo === null && id !== ownID)
