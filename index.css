@@ -1,16 +1,13 @@
-* {
-  margin: 0;
-  padding: 0;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box; }
-  *:focus {
-    outline: none; }
+*:focus {
+  outline: none; }
 
 html, body {
+  margin: 0;
+  padding: 0;
   width: 100%;
   height: 100%;
-  overflow: hidden; }
+  overflow: hidden;
+  box-sizing: border-box; }
 
 body {
   background-color: #030C22; }
@@ -33,59 +30,62 @@ a {
   a:active {
     color: white; }
 
+button {
+  color: white;
+  background-color: #3E3E53;
+  font-weight: bold;
+  border: 0;
+  border-radius: 5px;
+  margin: 5px;
+  padding: 10px;
+}
+
+button:disabled {
+  color: #555;
+  background-color: #3E3E53;
+}
+
+button:hover:enabled {
+  background-color: #404749;
+	cursor: pointer;
+}
+
 #help-button {
   position: absolute;
   top: 0;
   right: 0;
-  margin: 5px;
-  padding: 10px;
-  color: white;
   background-color: #20293F;
-  font-weight: bold;
-  border-radius: 5px;
-  cursor: default; }
-  #help-button:hover {
-    background-color: #3E3E53; }
+}
 
-#help {
-  position: absolute;
-  top: 45px;
-  left: 0;
-  right: 0;
-  visibility: hidden;
+#help-button:hover {
+  background-color: #3E3E53;
+}
+
+.fullWidth {
+	width: 100%;
+  text-align: center;
+}
+
+dialog {
+	max-width: 50%;
+  margin-top: 20vh;
   color: #E5E7E8;
   background-color: #20293F;
   border: 2px solid #E0D498;
-  border-radius: 10px;
-  margin: 10px;
-  padding: 10px; }
-  #help .COINWIDGETCOM_CONTAINER {
-    position: absolute;
-    top: 0;
-    right: 0;
-    margin: 5px; }
-    #help .COINWIDGETCOM_CONTAINER .COINWIDGETCOM_BUTTON_BITCOIN {
-      padding: 0;
-      background-color: #3E3E53; }
-    #help .COINWIDGETCOM_CONTAINER > span {
-      display: none; }
-  #help h1 {
+  border-radius: 10px; }
+  dialog h1 {
     color: #A9B0B3; }
-  #help ul {
+  dialog ul {
     margin: 1em;
     margin-left: 2em; }
 
-#close-button {
-  text-align: center;
-  margin: 5px;
-  padding: 10px;
-  color: white;
-  background-color: #3E3E53;
-  font-weight: bold;
-  border-radius: 5px;
-  cursor: default; }
-  #close-button:hover {
-    background-color: #404749; }
+.centered {
+	text-align: center;
+}
+
+#roomID {
+	font-weight: bold;
+}
 
 #thumbnails {
   position: absolute;

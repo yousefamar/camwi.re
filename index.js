@@ -29,7 +29,7 @@ let setLarge = node => {
 };
 
 window.turnOnCam = () => {
-	let camButton = document.getElemetById('camButton');
+	let camButton = document.getElementById('camButton');
 	camButton.disabled = true;
 
 	(async () => {
@@ -39,9 +39,17 @@ window.turnOnCam = () => {
 				video: true,
 			});
 		} catch (e) {
-			window.alert(e.name === 'PermissionDeniedError'
-				? "Camwi.re could not access your camera. Make sure you granted your browser permission to do so!"
-				: "Something went wrong: " + e.name);
+			switch (e.name) {
+				case 'PermissionDeniedError':
+					window.alert("Camwi.re could not access your camera. Make sure you granted your browser permission to do so!");
+					break;
+				case 'NotFoundError':
+					window.alert("Camwi.re could not detect any camera.");
+					break;
+				default:
+					window.alert("Something went wrong: " + e.name);
+					break;
+			}
 			camButton.disabled = false;
 			return;
 		}
@@ -69,7 +77,10 @@ window.addEventListener('DOMContentLoaded', async (event) => {
 		roomID = 'xxxxxx'.replace(/[x]/g, function(){
 			return (Math.random() * 36 | 0).toString(36);
 		});
-		window.history.replaceState({}, "New Room ID", "/" + roomID);
+		if (location.hostname === 'localhost')
+			roomID = 'test';
+		else
+			window.history.replaceState({}, "New Room ID", "/" + roomID);
 	}
 	document.getElementById('roomID').innerText = roomID;
 

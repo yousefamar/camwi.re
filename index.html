@@ -25,40 +25,28 @@
 
 	<link rel="stylesheet" href="index.css"></link>
 	<script type="module" src="index.js"></script>
-	<script src="lib/coin.js"></script>
 </head>
 <body>
-	<div id="help-button" onclick="document.getElementById('help').style.visibility = 'visible';">?</div>
+	<button id="help-button" onclick="document.getElementById('help').open = !document.getElementById('help').open">?</button>
 	<dialog id="startDialog" open>
 		<p>You're about to join the room <span id="roomID"></span>.</p>
-		<button id="camButton"  onclick="turnOnCam()">Start Cam</button>
-		<button id="joinButton" onclick="joinRoom()" disabled>Join Room</button>
+		<button id="camButton"  class="fullWidth" onclick="turnOnCam()">Start Cam</button>
+		<button id="joinButton" class="fullWidth" onclick="joinRoom()" disabled>Join Room</button>
 	</dialog>
-	<div id="help">
-		<script>
-			CoinWidgetCom.go({
-				wallet_address: "1Hv6UiXFoFNAAaHvpbgCXxnWNj14v1TPo7"
-				, currency: "bitcoin"
-				, counter: "count"
-				, alignment: "br"
-				, qrcode: true
-				, auto_show: false
-				, lbl_button: "Donate"
-				, lbl_address: "Camwi.re Bitcoin Address:"
-				, lbl_count: "donations"
-				, lbl_amount: "BTC"
-			});
-		</script>
+	<dialog id="help">
 		<h1>Camwi.re Help</h1>
 		<ul>
 			<li>Camwi.re is the simplest, browser-based, peer-to-peer video chat platform ever.</li>
-			<li>All rooms are public and all users equal.</li>
 			<li>Create or join rooms by navigating to http://camwi.re/<b>[room name]</b></li>
 			<li>Click/tap video stream thumbnails to enlarge them.</li>
 			<li>Send issues, feedback, and suggestions to <a href="mailto:yousef@amar.io?Subject=Camwi.re%20Feedback">yousef@amar.io</a>.</li>
+			<li>Donations welcome:</li>
 		</ul>
-		<div id="close-button" onclick="document.getElementById('help').style.visibility = '';">Close</div>
-	</div>
+		<div class="centered">
+			<img src="https://www.bitcoinqrcodemaker.com/api/?style=bitcoin&address=1Hv6UiXFoFNAAaHvpbgCXxnWNj14v1TPo7" height="100" width="100" border="0" alt="Bitcoin QR Code" />
+		</div>
+		<button id="close-button" class="fullWidth" onclick="document.getElementById('help').open = false">Close</button>
+	</dialog>
 	<div id="thumbnails">
 	</div>
 </body>
