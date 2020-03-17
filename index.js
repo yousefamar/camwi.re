@@ -27,7 +27,7 @@ let setLarge = node => {
 		largeVideo.play();
 	}
 	largeVideo = node;
-	document.body.appendChild(largeVideo);
+	document.body.prepend(largeVideo);
 	largeVideo.play();
 };
 
