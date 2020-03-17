@@ -29,7 +29,7 @@ let setLarge = node => {
 };
 
 window.turnOnCam = () => {
-	let camButton = document.getElementById('camButton');
+	let camButton = document.getElemetById('camButton');
 	camButton.disabled = true;
 
 	(async () => {
@@ -57,7 +57,7 @@ window.turnOnCam = () => {
 };
 
 window.joinRoom = () => {
-	let room = peerNet.join(roomID);
+	let room = peerNet.join('re.camwi.' + roomID);
 	room.eventEmitter.on('.', console.log);
 
 	document.getElementById('startDialog').open = false;
@@ -69,8 +69,7 @@ window.addEventListener('DOMContentLoaded', async (event) => {
 		roomID = 'xxxxxx'.replace(/[x]/g, function(){
 			return (Math.random() * 36 | 0).toString(36);
 		});
-		roomID = 'test';
-		//window.history.replaceState({}, "New Room ID", "/" + roomID);
+		window.history.replaceState({}, "New Room ID", "/" + roomID);
 	}
 	document.getElementById('roomID').innerText = roomID;
 
