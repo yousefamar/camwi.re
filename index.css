@@ -68,7 +68,7 @@ button:hover:enabled {
 
 dialog {
 	max-width: 50%;
-  margin-top: 20vh;
+  top: 20vh;
   color: #E5E7E8;
   background-color: #20293F;
   border: 2px solid #E0D498;
